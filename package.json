@@ -1,0 +1,24 @@
+{
+  "name": "lucky-bet-contracts",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "npx truffle test",
+    "compile": "npx truffle compile --all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lucky-Bet/Lucky-Bet-Contracts.git"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lucky-Bet/Lucky-Bet-Contracts/issues"
+  },
+  "homepage": "https://github.com/Lucky-Bet/Lucky-Bet-Contracts#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.2.0",
+    "@truffle/hdwallet-provider": "^1.1.0",
+    "truffle-plugin-verify": "^0.4.0",
+    "truffle-verify": "^1.0.8"
+  }
+}
