@@ -3,5 +3,3 @@ node_modules/
 .openzeppelin/
 package-lock.json
 .env
-contracts/ChonkNFT.sol
-contracts/GenesisPool.sol

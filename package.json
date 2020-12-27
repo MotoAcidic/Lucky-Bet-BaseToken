@@ -1,10 +1,6 @@
 {
   "name": "lucky-bet-basetoken",
   "version": "1.0.0",
-  "scripts": {
-    "test": "npx truffle test",
-    "compile": "npx truffle compile --all"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MotoAcidic/Lucky-Bet-BaseToken.git"
