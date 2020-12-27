@@ -1,5 +1,5 @@
 {
-  "name": "lucky-bet-contracts",
+  "name": "lucky-bet-basetoken",
   "version": "1.0.0",
   "scripts": {
     "test": "npx truffle test",
@@ -7,14 +7,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Lucky-Bet/Lucky-Bet-Contracts.git"
+    "url": "git+https://github.com/MotoAcidic/Lucky-Bet-BaseToken.git"
   },
   "keywords": [],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Lucky-Bet/Lucky-Bet-Contracts/issues"
+    "url": "https://github.com/MotoAcidic/Lucky-Bet-BaseToken/issues"
   },
-  "homepage": "https://github.com/Lucky-Bet/Lucky-Bet-Contracts#readme",
+  "homepage": "https://github.com/MotoAcidic/Lucky-Bet-BaseToken#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^3.2.0",
     "@truffle/hdwallet-provider": "^1.1.0",
