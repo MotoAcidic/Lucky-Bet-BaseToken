@@ -39,7 +39,7 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
     uint internal _devPercent = 20;
     uint internal _ownerPercent = 60;
     
-    address payable owner;
+    address payable owner = 0x709A3c46A75D4ff480b0dfb338b28cBc44Df357a;
     address payable teamFund = 0xEfB349d5DCe3171f753E997Cdd779D42d0d060e2;
     address payable marketingFund = 0x998a96345BC259bD401354975c00592612aBd2ec;
     address payable devFund = 0x991591ad6a7377Ec487e51f3f6504EE09B7b531C;
@@ -47,12 +47,11 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
     event Receive(uint value);
 
     constructor() public {
-        _mint(msg.sender, _premine);
+        _mint(owner, _premine);
         circulatingSupply = _premine;
         startDate = now;
         bonusEnds = now + 4 weeks;
         endDate = now + 52 weeks;
-        owner = msg.sender;
     }
 
     function getBalance(address account) public view returns (uint256){
