@@ -20,12 +20,11 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/EnumerableSet.sol";
 */
 
-
 contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
     using SafeMath for uint256;
 
     uint256 public _totalSupply = 5000000000e18; //5,000,000,000
-    uint256 internal _premine = 5000000e18;
+    uint256 internal _premine = 500000e18; // 500k
 
     uint public circulatingSupply;
     uint public startDate;

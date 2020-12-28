@@ -1,4 +1,4 @@
-# Block Duelers Contracts
+# Lucky Bet Base Contract
 
 ## Setup Instructions
 1. install [node.js](https://nodejs.org/en/)
@@ -17,3 +17,7 @@
 ## Additional resources
  * [Guide for debugging smart contracts with truffle develop](https://www.trufflesuite.com/tutorials/debugging-a-smart-contract)
  * [More info for unit testing with truffle](https://www.trufflesuite.com/docs/truffle/testing/testing-your-contracts)
+
+ ## To Verify
+ * `truffle migrate --network rinkeby` - This will launch the contract on the desired network
+ * `truffle run verify Casino --network rinkeby` - This will verify your contract on that network

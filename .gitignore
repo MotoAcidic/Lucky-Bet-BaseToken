@@ -2,4 +2,7 @@ node_modules/
 *.lock
 .openzeppelin/
 package-lock.json
-.env
+*.env
+.secret
+.etherscan
+.infura
