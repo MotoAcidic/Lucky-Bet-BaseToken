@@ -21,3 +21,6 @@
  ## To Verify
  * `truffle migrate --network rinkeby` - This will launch the contract on the desired network
  * `truffle run verify Casino --network rinkeby` - This will verify your contract on that network
+
+ ## To Flatten Contract
+ * `truffle-flattener contracts/LuckyToken.sol > FlattenedLuckyToken.sol`

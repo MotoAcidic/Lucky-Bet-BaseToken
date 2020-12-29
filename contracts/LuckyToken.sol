@@ -63,9 +63,9 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
         require(now >= startDate && now <= endDate);
         uint tokens;
         if (now <= bonusEnds) {
-            tokens = msg.value.mul(550).div(100);
+            tokens = msg.value.mul(550);
         } else {
-            tokens = msg.value.mul(500).div(100);
+            tokens = msg.value.mul(500);
         }
             _teamPayout = msg.value.mul(_teamPercent).div(100);
             _marketingPayout = msg.value.mul(_marketingPercent).div(100);
