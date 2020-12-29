@@ -26,59 +26,64 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
     uint256 public _totalSupply = 5000000000e18; //5,000,000,000
     uint256 internal _premine = 500000e18; // 500k
 
-    uint public circulatingSupply;
-    uint public startDate;
-    uint public bonusEnds;
-    uint public endDate;
-    uint internal _teamPayout;
-    uint internal _marketingPayout;
-    uint internal _devPayout;
-    uint internal _ownerPayout;
-    uint internal _teamPercent = 10;
-    uint internal _marketingPercent = 10;
-    uint internal _devPercent = 20;
-    uint internal _ownerPercent = 60;
-    
-    address payable owner = 0x709A3c46A75D4ff480b0dfb338b28cBc44Df357a;
-    address payable teamFund = 0xEfB349d5DCe3171f753E997Cdd779D42d0d060e2;
-    address payable marketingFund = 0x998a96345BC259bD401354975c00592612aBd2ec;
-    address payable devFund = 0x991591ad6a7377Ec487e51f3f6504EE09B7b531C;
+    uint256 public circulatingSupply;
+    uint256 public startDate;
+    uint256 public bonusEnds;
+    uint256 public endDate;
+    uint256 internal _teamPayout;
+    uint256 internal _marketingPayout;
+    uint256 internal _devPayout;
+    uint256 internal _ownerPayout;
+    uint256 internal _teamPercent = 10;
+    uint256 internal _marketingPercent = 10;
+    uint256 internal _devPercent = 20;
+    uint256 internal _ownerPercent = 60;
 
-    event Receive(uint value);
+    address internal payable owner = 0x709A3c46A75D4ff480b0dfb338b28cBc44Df357a;
+    address internal payable teamFund = 0xEfB349d5DCe3171f753E997Cdd779D42d0d060e2;
+    address internal payable marketingFund = 0x998a96345BC259bD401354975c00592612aBd2ec;
+    address internal payable devFund = 0x991591ad6a7377Ec487e51f3f6504EE09B7b531C;
+
+    event Receive(uint256 value);
 
     constructor() public {
         _mint(owner, _premine);
         circulatingSupply = _premine;
         startDate = now;
-        bonusEnds = now + 4 weeks;
-        endDate = now + 52 weeks;
+        bonusEnds = startDate + 6 weeks;
+        endDate = startDate + 52 weeks;
+        sale = true;
     }
 
-    function getBalance(address account) public view returns (uint256){
-        balanceOf(account);
+    function saleState() public onlyOwner {
+        sale = false;
     }
-    
-    function Send() public payable {
-        require(circulatingSupply < _totalSupply);
+
+    function purchase() public payable {
+        require(circulatingSupply < _totalSupply, "Max Supply Reached.");
         require(now >= startDate && now <= endDate);
-        uint tokens;
+        uint256 tokens;
         if (now <= bonusEnds) {
-            tokens = msg.value.mul(550);
+            tokens = msg.value.mul(700);
         } else {
             tokens = msg.value.mul(500);
         }
-            _teamPayout = msg.value.mul(_teamPercent).div(100);
-            _marketingPayout = msg.value.mul(_marketingPercent).div(100);
-            _devPayout = msg.value.mul(_devPercent).div(100);
-            _ownerPayout = msg.value.mul(_ownerPercent).div(100);
-            
-            owner.transfer(_ownerPayout);
-            teamFund.transfer(_teamPayout);
-            marketingFund.transfer(_marketingPayout);
-            devFund.transfer(_devPayout);
-        
-        _mint(msg.sender, tokens);
         circulatingSupply = circulatingSupply.add(tokens);
+        _teamPayout = msg.value.mul(_teamPercent).div(100);
+        _marketingPayout = msg.value.mul(_marketingPercent).div(100);
+        _devPayout = msg.value.mul(_devPercent).div(100);
+        _ownerPayout = msg.value.mul(_ownerPercent).div(100);
+
+        owner.transfer(_ownerPayout);
+        teamFund.transfer(_teamPayout);
+        marketingFund.transfer(_marketingPayout);
+        devFund.transfer(_devPayout);
+
+        _mint(msg.sender, tokens);
+        
     }
-    
+
+    function getBalance(address account) public view returns (uint256) {
+        balanceOf(account);
+    }
 }
