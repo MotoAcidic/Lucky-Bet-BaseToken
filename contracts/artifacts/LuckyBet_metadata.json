@@ -165,6 +165,68 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "addTeamMember",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "addressGameHistory",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "session",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takeHome",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "loss",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "teamFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "luckyNumber",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "owner",
 						"type": "address"
 					},
@@ -218,6 +280,25 @@
 					}
 				],
 				"name": "balanceOf",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "balances",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -288,6 +369,13 @@
 						"type": "bool"
 					}
 				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "distributeRewards",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -393,6 +481,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "getSetterRole",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -459,6 +560,43 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "isTeamMember",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "luckyBet",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "name",
 				"outputs": [
@@ -480,7 +618,33 @@
 			},
 			{
 				"inputs": [],
+				"name": "rand",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "rebootSale",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "removeTeamMember",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -501,6 +665,55 @@
 				"name": "renounceRole",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionID",
+						"type": "uint256"
+					}
+				],
+				"name": "returnSessionInfo",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "session",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takeHome",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "loss",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "teamFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "luckyNumber",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -535,6 +748,55 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "sessionGameHistory",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "session",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takeHome",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "loss",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "teamFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "luckyNumber",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "startDate",
 				"outputs": [
@@ -555,6 +817,19 @@
 						"internalType": "string",
 						"name": "",
 						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "teamFundPool",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -695,7 +970,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"localhost/contracts/LuckyToken.sol": "LuckyToken"
+			"localhost/contracts/LuckyBet.sol": "LuckyBet"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -771,6 +1046,14 @@
 			"urls": [
 				"bzz-raw://4580d57781513d98870d9738c7d39094336e0a70cdb90d68dad549c6ced466ec",
 				"dweb:/ipfs/Qmf9YZzzRFuvMnav9dgmeRUpdYMMECiZX8w25sHWVbA18V"
+			]
+		},
+		"localhost/contracts/LuckyBet.sol": {
+			"keccak256": "0x778d3ae1ecbf43cb6b2cef45dc5de3f93437a044c79edfb19e1e084d4fcc272c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://32293cdb82bb8e7087d7db3f2a8abfe99e2499e717760fc94fa4a18ccc280809",
+				"dweb:/ipfs/QmaA4dyUrUuLQ1znEu5XEKZWCDyMhDa9cnbnd6Huu3nduV"
 			]
 		},
 		"localhost/contracts/LuckyToken.sol": {

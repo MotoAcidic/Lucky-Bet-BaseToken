@@ -19,10 +19,9 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
 
-
 contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
     using SafeMath for uint256;
-    
+
     bytes32 private constant OWNER_ROLE = keccak256("OWNER_ROLE");
 
     uint256 public _totalSupply = 5000000000e18; //5,000,000,000
@@ -45,11 +44,10 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
     address payable teamFund = 0xEfB349d5DCe3171f753E997Cdd779D42d0d060e2;
     address payable marketingFund = 0x998a96345BC259bD401354975c00592612aBd2ec;
     address payable devFund = 0x991591ad6a7377Ec487e51f3f6504EE09B7b531C;
-    
+
+    // Set the sale state
     bool public sale;
 
-    event Receive(uint256 value);
-    
     modifier onlyOwner() {
         require(hasRole(OWNER_ROLE, _msgSender()), "Caller is not the owner.");
         _;
@@ -59,24 +57,24 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
         owner = msg.sender;
         _setupRole(OWNER_ROLE, msg.sender);
         _mint(owner, _premine);
-        
+
         circulatingSupply = _premine;
         startDate = now;
         bonusEnds = startDate + 6 weeks;
         sale = true;
     }
 
-    function endSale() public onlyOwner{
+    function endSale() public onlyOwner {
         sale = false;
     }
-    
-    function rebootSale() public onlyOwner{
+
+    function rebootSale() public onlyOwner {
         sale = true;
     }
 
     function purchase() public payable {
         require(circulatingSupply < _totalSupply, "Max Supply Reached.");
-        require(_sale == true, "Purchasing Tokens in not avaiable right now.");
+        require(sale == true, "Purchasing Tokens in not avaiable right now.");
         uint256 tokens;
         if (now <= bonusEnds) {
             tokens = msg.value.mul(700);
@@ -95,10 +93,10 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
         devFund.transfer(_devPayout);
 
         _mint(msg.sender, tokens);
-        
     }
 
     function getBalance(address account) public view returns (uint256) {
         balanceOf(account);
     }
+
 }
