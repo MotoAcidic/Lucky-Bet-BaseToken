@@ -3,25 +3,27 @@
 pragma solidity ^0.6.2;
 // For compiling with Truffle use imports bellow and comment out Remix imports
 // Truffle Imports
-
+/*
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-
+*/
 // For compiling with Remix use imports below
 // Remix Imports
-/*
+
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControl.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/EnumerableSet.sol";
-*/
+
 
 contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
     using SafeMath for uint256;
+    
+    bytes32 private constant OWNER_ROLE = keccak256("OWNER_ROLE");
 
     uint256 public _totalSupply = 5000000000e18; //5,000,000,000
     uint256 internal _premine = 500000e18; // 500k
@@ -39,29 +41,42 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
     uint256 internal _devPercent = 20;
     uint256 internal _ownerPercent = 60;
 
-    address internal payable owner = 0x709A3c46A75D4ff480b0dfb338b28cBc44Df357a;
-    address internal payable teamFund = 0xEfB349d5DCe3171f753E997Cdd779D42d0d060e2;
-    address internal payable marketingFund = 0x998a96345BC259bD401354975c00592612aBd2ec;
-    address internal payable devFund = 0x991591ad6a7377Ec487e51f3f6504EE09B7b531C;
+    address payable owner = 0x709A3c46A75D4ff480b0dfb338b28cBc44Df357a;
+    address payable teamFund = 0xEfB349d5DCe3171f753E997Cdd779D42d0d060e2;
+    address payable marketingFund = 0x998a96345BC259bD401354975c00592612aBd2ec;
+    address payable devFund = 0x991591ad6a7377Ec487e51f3f6504EE09B7b531C;
+    
+    bool public sale;
 
     event Receive(uint256 value);
+    
+    modifier onlyOwner() {
+        require(hasRole(OWNER_ROLE, _msgSender()), "Caller is not the owner.");
+        _;
+    }
 
     constructor() public {
+        owner = msg.sender;
+        _setupRole(OWNER_ROLE, msg.sender);
         _mint(owner, _premine);
+        
         circulatingSupply = _premine;
         startDate = now;
         bonusEnds = startDate + 6 weeks;
-        endDate = startDate + 52 weeks;
         sale = true;
     }
 
-    function saleState() public onlyOwner {
+    function endSale() public onlyOwner{
         sale = false;
+    }
+    
+    function rebootSale() public onlyOwner{
+        sale = true;
     }
 
     function purchase() public payable {
         require(circulatingSupply < _totalSupply, "Max Supply Reached.");
-        require(now >= startDate && now <= endDate);
+        require(_sale == true, "Purchasing Tokens in not avaiable right now.");
         uint256 tokens;
         if (now <= bonusEnds) {
             tokens = msg.value.mul(700);
