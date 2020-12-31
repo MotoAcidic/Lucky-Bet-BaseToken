@@ -13,6 +13,8 @@ contract LuckyBet is LuckyToken {
     using SafeMath for uint256;
     
     bytes32 private constant SETTER_ROLE = keccak256("SETTER_ROLE");
+    
+    address mainToken = 0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8;
 
     address[] internal _teamMembers;
     uint256 internal teamCount;
