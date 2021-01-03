@@ -18,11 +18,13 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
+import "./interfaces/ILuckyToken.sol";
 
-contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
+contract LuckyToken is ERC20("Lucky Bet", "LBT"), ILuckyToken, AccessControl {
     using SafeMath for uint256;
 
     bytes32 private constant OWNER_ROLE = keccak256("OWNER_ROLE");
+    bytes32 private constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     uint256 public _totalSupply = 5000000000e18; //5,000,000,000
     uint256 internal _premine = 500000e18; // 500k
@@ -50,6 +52,11 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
 
     modifier onlyOwner() {
         require(hasRole(OWNER_ROLE, _msgSender()), "Caller is not the owner.");
+        _;
+    }
+
+    modifier onlyMinter() {
+        require(hasRole(MINTER_ROLE, _msgSender()), "Caller is not a minter");
         _;
     }
 
@@ -97,6 +104,18 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), AccessControl {
 
     function getBalance(address account) public view returns (uint256) {
         balanceOf(account);
+    }
+
+    function mint(address to, uint256 amount) external override onlyMinter {
+        _mint(to, amount);
+    }
+
+    function burn(address from, uint256 amount) external override {
+        _burn(from, amount);
+    }
+
+    function getMinterRole() external pure returns (bytes32) {
+        return MINTER_ROLE;
     }
 
 }

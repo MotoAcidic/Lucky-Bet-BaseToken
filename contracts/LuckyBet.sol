@@ -3,22 +3,24 @@
 pragma solidity ^0.6.2;
 
 import "./LuckyToken.sol";
+import "./interfaces/ILuckyToken.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControl.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
 
-contract LuckyBet is LuckyToken {
+contract LuckyBet is IERC20, LuckyToken  {
     using SafeMath for uint256;
     
     bytes32 private constant SETTER_ROLE = keccak256("SETTER_ROLE");
     
-    address mainToken = 0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8;
+    address public mainToken = 0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8;
+    ILuckyToken public constant luckyToken = ILuckyToken(0xf4A81C18816C9B0AB98FAC51B36Dcb63b0E58Fde);
 
     address[] internal _teamMembers;
     uint256 internal teamCount;
-    
+
     address internal _owner = 0x709A3c46A75D4ff480b0dfb338b28cBc44Df357a;
 
     uint256 internal _moderatorPercent = 100; // 2%
@@ -112,7 +114,6 @@ contract LuckyBet is LuckyToken {
     function luckyBet(uint256 amount) public payable {
         require(amount >= 2, "Cannot stake less than 2 LBT");
         require(amount <= 100, "Cannot stake more than 100 LBT");
-        _burn(msg.sender, amount);
         _sessionsIds = _sessionsIds.add(1);
 
         uint256 sessionId = _sessionsIds;
@@ -132,23 +133,26 @@ contract LuckyBet is LuckyToken {
             if (luckyNumber == 777) {
                 reward = amount.mul(_jackpot777).div(10000);
                 loss = 0;
-
+                
                 _mint(msg.sender, reward);
+                //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_smallBetBigWin).div(10000);
                 loss = 0;
-
+                
                 _mint(msg.sender, reward);
+                //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_smallBetMediumWin).div(10000);
                 loss = amount.sub(reward);
-
+                
                 _burn(msg.sender, loss);
+                //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_smallBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
-                _burn(msg.sender, loss);
+                luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
                 loss = amount;
@@ -161,10 +165,12 @@ contract LuckyBet is LuckyToken {
 
                     //transfer(_owner, ownersCut);
                     //transfer(teamPayoutAddress, projectsCut);
-
+                    
                     _burn(msg.sender, feeAfterCuts);
+                    //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
                     _burn(msg.sender, loss);
+                    //luckyToken.burn(msg.sender, loss);
                 }
             }
         }
@@ -176,23 +182,27 @@ contract LuckyBet is LuckyToken {
             if (luckyNumber == 777) {
                 reward = amount.mul(_jackpot777).div(10000);
                 loss = 0;
-
+                
                 _mint(msg.sender, reward);
+                //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_mediumBetBigWin).div(10000);
                 loss = 0;
-
+                
                 _mint(msg.sender, reward);
+                //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_mediumBetMediumWin).div(10000);
                 loss = amount.sub(reward);
-
+                
                 _burn(msg.sender, loss);
+                //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_mediumBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
                 _burn(msg.sender, loss);
+                //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
                 loss = amount;
@@ -205,10 +215,12 @@ contract LuckyBet is LuckyToken {
 
                     //transfer(_owner, ownersCut);
                     //transfer(teamPayoutAddress, projectsCut);
-
+                    
                     _burn(msg.sender, feeAfterCuts);
+                    //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
-                    _burn(msg.sender, loss);
+                    _burn(msg.sender, feeAfterCuts);
+                    //luckyToken.burn(msg.sender, loss);
                 }
             }
         }
@@ -222,21 +234,25 @@ contract LuckyBet is LuckyToken {
                 loss = 0;
 
                 _mint(msg.sender, reward);
+                //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_largeBetBigWin).div(10000);
                 loss = 0;
 
                 _mint(msg.sender, reward);
+                //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_largeBetMediumWin).div(10000);
                 loss = amount.sub(reward);
 
                 _burn(msg.sender, loss);
+                //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_largeBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
                 _burn(msg.sender, loss);
+                //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
                 loss = amount;
@@ -251,8 +267,10 @@ contract LuckyBet is LuckyToken {
                     //transfer(teamPayoutAddress, projectsCut);
 
                     _burn(msg.sender, feeAfterCuts);
+                    //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
                     _burn(msg.sender, loss);
+                    //luckyToken.burn(msg.sender, loss);
                 }
             }
         }
