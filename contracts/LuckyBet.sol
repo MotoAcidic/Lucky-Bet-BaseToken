@@ -2,7 +2,7 @@
 
 pragma solidity ^0.6.2;
 
-import "./LuckyToken.sol";
+//import "./LuckyToken.sol";
 import "./interfaces/ILuckyToken.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControl.sol";
@@ -10,13 +10,12 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
 
-contract LuckyBet is IERC20, LuckyToken  {
+abstract contract LuckyBet is ILuckyToken, AccessControl {
     using SafeMath for uint256;
     
     bytes32 private constant SETTER_ROLE = keccak256("SETTER_ROLE");
     
-    address public mainToken = 0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8;
-    ILuckyToken public constant luckyToken = ILuckyToken(0xf4A81C18816C9B0AB98FAC51B36Dcb63b0E58Fde);
+    IERC20 private _token;
 
     address[] internal _teamMembers;
     uint256 internal teamCount;
@@ -50,7 +49,6 @@ contract LuckyBet is IERC20, LuckyToken  {
     
     mapping(address => gameData) public addressGameHistory;
     mapping(uint256 => gameData) public sessionGameHistory;
-    mapping(address => uint256) public balances;
     mapping(address => uint256) internal rewards;
 
 
@@ -69,8 +67,9 @@ contract LuckyBet is IERC20, LuckyToken  {
         _;
     }
 
-    constructor() public {
-        owner = msg.sender;
+    constructor(IERC20 token) public {
+        _token = token;
+        //owner = msg.sender;
         _setupRole(SETTER_ROLE, msg.sender);
     }
 
@@ -100,7 +99,7 @@ contract LuckyBet is IERC20, LuckyToken  {
             //rewards[member] = rewards[member].add(reward);
             // Set the team fund back to 0
             teamFundPool == 0;
-            _mint(member, reward);
+            _token.mint(member, reward);
         }
     }
 
@@ -134,25 +133,26 @@ contract LuckyBet is IERC20, LuckyToken  {
                 reward = amount.mul(_jackpot777).div(10000);
                 loss = 0;
                 
-                _mint(msg.sender, reward);
+                _token._mint(msg.sender, reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_smallBetBigWin).div(10000);
                 loss = 0;
                 
-                _mint(msg.sender, reward);
+                _token._mint(msg.sender, reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_smallBetMediumWin).div(10000);
                 loss = amount.sub(reward);
                 
-                _burn(msg.sender, loss);
+                _token._burn(msg.sender, loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_smallBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
-                luckyToken.burn(msg.sender, loss);
+                _token._burn(msg.sender, loss);
+                //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
                 loss = amount;
@@ -166,10 +166,10 @@ contract LuckyBet is IERC20, LuckyToken  {
                     //transfer(_owner, ownersCut);
                     //transfer(teamPayoutAddress, projectsCut);
                     
-                    _burn(msg.sender, feeAfterCuts);
+                    _token._burn(msg.sender, feeAfterCuts);
                     //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
-                    _burn(msg.sender, loss);
+                   _token._burn(msg.sender, loss);
                     //luckyToken.burn(msg.sender, loss);
                 }
             }
@@ -183,25 +183,25 @@ contract LuckyBet is IERC20, LuckyToken  {
                 reward = amount.mul(_jackpot777).div(10000);
                 loss = 0;
                 
-                _mint(msg.sender, reward);
+                _token._mint(msg.sender, reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_mediumBetBigWin).div(10000);
                 loss = 0;
                 
-                _mint(msg.sender, reward);
+                _token._mint(msg.sender, reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_mediumBetMediumWin).div(10000);
                 loss = amount.sub(reward);
                 
-                _burn(msg.sender, loss);
+               _token. _burn(msg.sender, loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_mediumBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
-                _burn(msg.sender, loss);
+                _token._burn(msg.sender, loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
@@ -216,10 +216,10 @@ contract LuckyBet is IERC20, LuckyToken  {
                     //transfer(_owner, ownersCut);
                     //transfer(teamPayoutAddress, projectsCut);
                     
-                    _burn(msg.sender, feeAfterCuts);
+                    _token._burn(msg.sender, feeAfterCuts);
                     //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
-                    _burn(msg.sender, feeAfterCuts);
+                    _token._burn(msg.sender, feeAfterCuts);
                     //luckyToken.burn(msg.sender, loss);
                 }
             }
@@ -233,25 +233,25 @@ contract LuckyBet is IERC20, LuckyToken  {
                 reward = amount.mul(_jackpot777).div(10000);
                 loss = 0;
 
-                _mint(msg.sender, reward);
+                _token._mint(msg.sender, reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_largeBetBigWin).div(10000);
                 loss = 0;
 
-                _mint(msg.sender, reward);
+                _token._mint(msg.sender, reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_largeBetMediumWin).div(10000);
                 loss = amount.sub(reward);
 
-                _burn(msg.sender, loss);
+                _token._burn(msg.sender, loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_largeBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
-                _burn(msg.sender, loss);
+                _token._burn(msg.sender, loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
@@ -266,10 +266,10 @@ contract LuckyBet is IERC20, LuckyToken  {
                     //transfer(_owner, ownersCut);
                     //transfer(teamPayoutAddress, projectsCut);
 
-                    _burn(msg.sender, feeAfterCuts);
+                    _token._burn(msg.sender, feeAfterCuts);
                     //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
-                    _burn(msg.sender, loss);
+                    _token._burn(msg.sender, loss);
                     //luckyToken.burn(msg.sender, loss);
                 }
             }
@@ -289,7 +289,7 @@ contract LuckyBet is IERC20, LuckyToken  {
         addressGameHistory[msg.sender] = gameData_;
         sessionGameHistory[sessionId] = gameData_;
 
-        transfer(_owner, ownersCut);
+        _token.transfer(_owner, ownersCut);
         teamFundPool.add(projectsCut);
     }
 

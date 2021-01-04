@@ -18,6 +18,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
+import "./LuckyBet.sol"; 
 import "./interfaces/ILuckyToken.sol";
 
 contract LuckyToken is ERC20("Lucky Bet", "LBT"), ILuckyToken, AccessControl {
@@ -84,9 +85,9 @@ contract LuckyToken is ERC20("Lucky Bet", "LBT"), ILuckyToken, AccessControl {
         require(sale == true, "Purchasing Tokens in not avaiable right now.");
         uint256 tokens;
         if (now <= bonusEnds) {
-            tokens = msg.value.mul(700);
+            tokens = msg.value.mul(700).div(100);
         } else {
-            tokens = msg.value.mul(500);
+            tokens = msg.value.mul(500).div(100);
         }
         circulatingSupply = circulatingSupply.add(tokens);
         _teamPayout = msg.value.mul(_teamPercent).div(100);
