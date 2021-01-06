@@ -2,24 +2,26 @@
 
 pragma solidity ^0.6.2;
 
-//import "./LuckyToken.sol";
 import "./interfaces/ILuckyToken.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
+//import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControl.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
 
-abstract contract LuckyBet is ILuckyToken, AccessControl {
+contract LuckyBet is AccessControl {
     using SafeMath for uint256;
     
     bytes32 private constant SETTER_ROLE = keccak256("SETTER_ROLE");
+    bytes32 private constant OWNER_ROLE = keccak256("OWNER_ROLE");
     
-    IERC20 private _token;
-
     address[] internal _teamMembers;
     uint256 internal teamCount;
 
+    address luckyTokenAddress;
+    
+    ILuckyToken luckyContract = ILuckyToken(luckyTokenAddress);
+    
     address internal _owner = 0x709A3c46A75D4ff480b0dfb338b28cBc44Df357a;
 
     uint256 internal _moderatorPercent = 100; // 2%
@@ -51,7 +53,6 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
     mapping(uint256 => gameData) public sessionGameHistory;
     mapping(address => uint256) internal rewards;
 
-
     struct gameData {
         address account;
         uint256 session;
@@ -61,16 +62,24 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
         uint256 teamFee;
         uint256 luckyNumber;
     }
+    
+    modifier onlyOwner() {
+        require(hasRole(OWNER_ROLE, _msgSender()), "Caller is not a owner");
+        _;
+    }
 
     modifier onlySetter() {
         require(hasRole(SETTER_ROLE, _msgSender()), "Caller is not a setter");
         _;
     }
 
-    constructor(IERC20 token) public {
-        _token = token;
-        //owner = msg.sender;
+    constructor() public {
+        _setupRole(OWNER_ROLE, msg.sender);
         _setupRole(SETTER_ROLE, msg.sender);
+    }
+    
+    function setLuckyTokenAddress(address _luckyAddress) external onlyOwner{
+        luckyTokenAddress = _luckyAddress;
     }
 
     function getSetterRole() external pure returns (bytes32) {
@@ -99,8 +108,17 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
             //rewards[member] = rewards[member].add(reward);
             // Set the team fund back to 0
             teamFundPool == 0;
-            _token.mint(member, reward);
+            _initPayout(member, reward);
         }
+    }
+    
+    function _initPayout(address to, uint256 amount) internal {
+        ILuckyToken(luckyTokenAddress).mint(to, amount);
+    }
+    
+    function _initBurn(address to, uint256 amount) internal {
+        //ILuckyToken(luckyTokenAddress).burn(to, amount);
+        luckyContract.burn(to,amount);
     }
 
     function isTeamMember(address _address) public view returns (bool, uint256) {
@@ -110,7 +128,7 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
         return (false, 0);
     }
 
-    function luckyBet(uint256 amount) public payable {
+    function luckyBet(uint256 amount) public {
         require(amount >= 2, "Cannot stake less than 2 LBT");
         require(amount <= 100, "Cannot stake more than 100 LBT");
         _sessionsIds = _sessionsIds.add(1);
@@ -133,25 +151,25 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
                 reward = amount.mul(_jackpot777).div(10000);
                 loss = 0;
                 
-                _token._mint(msg.sender, reward);
+                _initPayout(address(this), reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_smallBetBigWin).div(10000);
                 loss = 0;
                 
-                _token._mint(msg.sender, reward);
+                _initPayout(address(this), reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_smallBetMediumWin).div(10000);
                 loss = amount.sub(reward);
                 
-                _token._burn(msg.sender, loss);
+                _initBurn(address(this), loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_smallBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
-                _token._burn(msg.sender, loss);
+                _initBurn(address(this), loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
@@ -166,10 +184,10 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
                     //transfer(_owner, ownersCut);
                     //transfer(teamPayoutAddress, projectsCut);
                     
-                    _token._burn(msg.sender, feeAfterCuts);
+                    _initBurn(address(this), feeAfterCuts);
                     //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
-                   _token._burn(msg.sender, loss);
+                    _initBurn(address(this), loss);
                     //luckyToken.burn(msg.sender, loss);
                 }
             }
@@ -183,25 +201,25 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
                 reward = amount.mul(_jackpot777).div(10000);
                 loss = 0;
                 
-                _token._mint(msg.sender, reward);
+                _initPayout(address(this), reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_mediumBetBigWin).div(10000);
                 loss = 0;
                 
-                _token._mint(msg.sender, reward);
+                _initPayout(address(this), reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_mediumBetMediumWin).div(10000);
                 loss = amount.sub(reward);
                 
-               _token. _burn(msg.sender, loss);
+               _initBurn(address(this), loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_mediumBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
-                _token._burn(msg.sender, loss);
+                _initBurn(address(this), loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
@@ -216,10 +234,10 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
                     //transfer(_owner, ownersCut);
                     //transfer(teamPayoutAddress, projectsCut);
                     
-                    _token._burn(msg.sender, feeAfterCuts);
+                    _initBurn(address(this), feeAfterCuts);
                     //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
-                    _token._burn(msg.sender, feeAfterCuts);
+                    _initBurn(address(this), feeAfterCuts);
                     //luckyToken.burn(msg.sender, loss);
                 }
             }
@@ -233,25 +251,25 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
                 reward = amount.mul(_jackpot777).div(10000);
                 loss = 0;
 
-                _token._mint(msg.sender, reward);
+                _initPayout(address(this), reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 900 || luckyNumber <= 100) {
                 reward = amount.mul(_largeBetBigWin).div(10000);
                 loss = 0;
 
-                _token._mint(msg.sender, reward);
+                _initPayout(address(this), reward);
                 //luckyToken.mint(msg.sender, reward);
             } else if (luckyNumber >= 800 || luckyNumber <= 200) {
                 reward = amount.mul(_largeBetMediumWin).div(10000);
                 loss = amount.sub(reward);
 
-                _token._burn(msg.sender, loss);
+                _initBurn(address(this), loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber >= 700 || luckyNumber <= 600) {
                 reward = amount.mul(_largeBetSmallWin).div(10000);
                 loss = amount.sub(reward);
 
-                _token._burn(msg.sender, loss);
+                _initBurn(address(this), loss);
                 //luckyToken.burn(msg.sender, loss);
             } else if (luckyNumber < 700 && luckyNumber > 600) {
                 reward = 0;
@@ -266,10 +284,10 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
                     //transfer(_owner, ownersCut);
                     //transfer(teamPayoutAddress, projectsCut);
 
-                    _token._burn(msg.sender, feeAfterCuts);
+                    _initBurn(address(this), feeAfterCuts);
                     //luckyToken.burn(msg.sender, feeAfterCuts);
                 } else {
-                    _token._burn(msg.sender, loss);
+                    _initBurn(address(this), loss);
                     //luckyToken.burn(msg.sender, loss);
                 }
             }
@@ -277,7 +295,7 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
 
         gameData memory gameData_ =
             gameData({
-                account: msg.sender,
+                account: address(this),
                 session: sessionId,
                 amount: amount,
                 takeHome: reward,
@@ -285,11 +303,13 @@ abstract contract LuckyBet is ILuckyToken, AccessControl {
                 teamFee: totalFees,
                 luckyNumber: luckyNumber
             });
-
-        addressGameHistory[msg.sender] = gameData_;
+            
+        _initBurn(address(this), amount);
+        
+        addressGameHistory[address(this)] = gameData_;
         sessionGameHistory[sessionId] = gameData_;
 
-        _token.transfer(_owner, ownersCut);
+        _initPayout(_owner, ownersCut);
         teamFundPool.add(projectsCut);
     }
 

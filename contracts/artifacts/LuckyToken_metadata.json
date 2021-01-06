@@ -242,6 +242,24 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "circulatingSupply",
 				"outputs": [
@@ -328,6 +346,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getMinterRole",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -455,6 +486,24 @@
 						"type": "bool"
 					}
 				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "mint",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -773,12 +822,28 @@
 				"dweb:/ipfs/Qmf9YZzzRFuvMnav9dgmeRUpdYMMECiZX8w25sHWVbA18V"
 			]
 		},
-		"localhost/contracts/LuckyToken.sol": {
-			"keccak256": "0xcf8095ecd9fe30120b97d246d2a91cf536bce541aa8a95fee9a4ae5553c7a797",
+		"localhost/contracts/LuckyBet.sol": {
+			"keccak256": "0xfff98bb6e0273ce6f94ee5352be7ea7482a032e2dd0bf4df239c46091ae4ed64",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://dd19801aa1beddfceadeb03cbc9f6e7b131381d0d608d8e9430533993aeca0e5",
-				"dweb:/ipfs/QmP4zkDxS9JHotxAW8LaE4ZqSv6vvWmYPQR5xGH8GwLned"
+				"bzz-raw://0487909b94637ed5bfb71b98affbee7cb1bbc00266b87e8bd9a0069f97d54aee",
+				"dweb:/ipfs/QmeCJPVn7UdEeQCRDy7VdW8GxtwWnwyaA4RNZdESy9bkKG"
+			]
+		},
+		"localhost/contracts/LuckyToken.sol": {
+			"keccak256": "0x7906cb8205e9f6adb782917d7d5d06851d31224912a2d9f349325d47c5a2a6b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://aadee10d666cc8e6dac57cb2c652cf186799512ee9594459ffa873ce748e5449",
+				"dweb:/ipfs/QmTJ9MweyNh3vDASbH2UFMfH19BeanSU7gK1ZY29oT3VtF"
+			]
+		},
+		"localhost/contracts/interfaces/ILuckyToken.sol": {
+			"keccak256": "0xb09717e9b0510caa7d0d47c602e5e184d30be932ff414226bd45b32a8deda25e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e8f424039546dfbc420993c129d2b64b4b0771c0ae334e6c9f605c117446482f",
+				"dweb:/ipfs/QmT39WognkfgXmUpNrkeRp7tRr5XsKL1ezKXx2SPHG3pBp"
 			]
 		}
 	},
